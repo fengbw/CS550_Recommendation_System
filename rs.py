@@ -213,7 +213,7 @@ def recommendation(trainData, testData):
     # u10 = ['A3EBHHCZO6V2A4']
     u10 = list(testUsers)[:10]
     # user = 'A3EBHHCZO6V2A4'
-    for user in u10:
+    for user in testUsers:
         for product in products:
             # if product not in usersAllrate[user]:
             sumUp = 0
@@ -239,7 +239,7 @@ def recommendation(trainData, testData):
         print(user, 'product prediction: ')
         print(allProductPredict[user])
         print(topNTruth[user])
-    precision, recall, fM = evaluation(u10, allProductPredict, topNTruth)
+    precision, recall, fM = evaluation(testUsers, allProductPredict, topNTruth)
     print(precision, recall, fM)
 
 def evaluation(testUsers, allProductPredict, topNTruth):
@@ -269,5 +269,5 @@ def evaluation(testUsers, allProductPredict, topNTruth):
 if __name__ == '__main__':
     data = readData()
     trainData, testData = splitData(data)
-    # ratePredict(data, testData)
+    ratePredict(trainData, testData)
     recommendation(trainData, testData)
