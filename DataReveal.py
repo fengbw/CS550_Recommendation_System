@@ -1,6 +1,5 @@
 import json
 import matplotlib.pyplot as plt
-import collections
 
 def readData():
     data = [[] for i in range(3)]
