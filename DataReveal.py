@@ -18,7 +18,6 @@ for key in data[2]:
     dict[key] = dict.get(key, 0) + 1
 key_value = list(dict.keys())
 value_list = list(dict.values())
-
 plt.bar(key_value, value_list)
 plt.title("Rating Score Distribution")
 plt.xlabel("Scores")
@@ -47,3 +46,4 @@ plt.xlabel("Items")
 plt.ylabel("Number of Ratings")
 plt.savefig("ItemsRatingDistribution.png")
 plt.show()
+
