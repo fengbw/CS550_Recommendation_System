@@ -58,7 +58,7 @@ def ratePredict(trainData, testData):
         res = []
         for user2 in users:
             if user1 != user2:
-                similar = Euclidean(usersAllrate[user1], usersAllrate[user2])
+                similar = Cosine(usersAllrate[user1], usersAllrate[user2])
                 res.append((user2, similar))
         res.sort(key = lambda x: x[1])
         usersSimilar[user1] = [(user, sim) for user, sim in res if sim > 0]
@@ -96,7 +96,8 @@ def ratePredict(trainData, testData):
             if sumDown != 0:
                 testPredict[user][product] = sumUp / sumDown
             else:
-                testPredict[user][product] = random.randint(4,5)
+                testPredict[user][product] = -1
+                #testPredict[user][product] = 0#random.randint(4,5)
     # print(testPredict['A27LMYOUM86WHY'])
     mae = MAE(testPredict, testAllrate)
     print('MAE :', mae)
@@ -108,8 +109,11 @@ def MAE(testPredict, testAllrate):
     n = 0
     for user in testPredict.keys():
         for product in testPredict[user]:
-            sumUp += abs(testPredict[user][product] - testAllrate[user][product])
-            n += 1
+            if testPredict[user][product] == -1:
+                continue
+            else:
+                sumUp += abs(testPredict[user][product] - testAllrate[user][product])
+                n += 1
     return sumUp / n
 
 def RMSE(testPredict, testAllrate):
@@ -117,8 +121,11 @@ def RMSE(testPredict, testAllrate):
     n = 0
     for user in testPredict.keys():
         for product in testPredict[user]:
-            sumUp += pow(testPredict[user][product] - testAllrate[user][product], 2)
-            n += 1
+            if testPredict[user][product] == -1:
+                continue
+            else:
+                sumUp += pow(testPredict[user][product] - testAllrate[user][product], 2)
+                n += 1
     return sqrt(sumUp / n)
 
 def Euclidean(rates1, rates2):
@@ -128,10 +135,25 @@ def Euclidean(rates1, rates2):
         if key in rates2:
             common[key] = 1
             distance += pow(rates1[key] - rates2[key], 2)
-    if len(common) < 3: return 0
+    if len(common) < 4: return 0
     total = len(rates1) + len(rates2) - len(common)
     jac = len(common) / total
     return 1 / (1 + sqrt(distance)) * jac
+
+def Cosine(rates1, rates2):
+    common = {}
+    sumUp = 0
+    left = []
+    right = []
+    for key in rates1.keys():
+        if key in rates2:
+            common[key] = 1
+            sumUp += rates1[key] * rates2[key]
+            left.append(rates1[key]**2)
+            right.append(rates2[key]**2)
+    if len(common) < 15: return 0
+    sumDown = sqrt(sum(left)) * sqrt(sum(right))
+    return sumUp / sumDown
 
 def pearson_sim(rates1, rates2):
     distance = 0
@@ -270,4 +292,4 @@ if __name__ == '__main__':
     data = readData()
     trainData, testData = splitData(data)
     ratePredict(trainData, testData)
-    recommendation(trainData, testData)
+    # recommendation(trainData, testData)
