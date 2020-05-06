@@ -58,7 +58,7 @@ def ratePredict(trainData, testData):
         res = []
         for user2 in users:
             if user1 != user2:
-                similar = Cosine(usersAllrate[user1], usersAllrate[user2])
+                similar = cosine(usersAllrate[user1], usersAllrate[user2])
                 res.append((user2, similar))
         res.sort(key = lambda x: x[1])
         usersSimilar[user1] = [(user, sim) for user, sim in res if sim > 0]
@@ -161,7 +161,7 @@ def pearson_sim(rates1, rates2):
     for key in rates1.keys():
         if key in rates2:
             common[key] = 1
-    if len(common) == 0:
+    if len(common) < 3:
         return 0
     n = len(common)
 
